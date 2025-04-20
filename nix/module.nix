@@ -7,7 +7,7 @@ inputs:
 }:
 
 let
-  cfg = config.services.asus-numberpad-driver;
+  cfg = config.hardware.asus-numberpad-driver;
 
   # Function to convert configuration options to string
   toConfigFile =
@@ -20,7 +20,14 @@ let
   configDir = "/etc/asus-numberpad-driver/";
 in
 {
-  options.services.asus-numberpad-driver = {
+  imports = [
+    (lib.mkRenamedOptionModule
+      [ "services" "asus-numberpad-driver" ]
+      [ "hardware" "asus-numberpad-driver" ]
+    )
+  ];
+
+  options.hardware.asus-numberpad-driver = {
     enable = lib.mkEnableOption "Enable the Asus Numberpad Driver service.";
 
     package = lib.mkOption {
