@@ -42,18 +42,17 @@ python313Packages.buildPythonPackage {
   ];
 
   doCheck = false;
-
-  # Skip build and just focus on copying files, no setuptools required
-  buildPhase = ''
-    echo "Skipping build phase since there's no setup.py"
-  '';
+  doBuild = false;
 
   # Install files for driver and layouts
   installPhase = ''
-    mkdir -p $out/share/asus-numberpad-driver
+    mkdir -p $out/{share/asus-numberpad-driver,bin}
 
     # Copy the driver script
     cp numberpad.py $out/share/asus-numberpad-driver/
+
+    # mainPrograms are searched at $out/bin
+    ln -s $out/share/asus-numberpad-driver/numberpad.py $out/bin/numberpad.py
 
     # Copy layouts directory if it exists, and remove __pycache__ if present
     if [ -d layouts ]; then
