@@ -1,22 +1,25 @@
-{ lib
-, python313Packages
-, pkgs
+{
+  lib,
+  python313Packages,
+  pkgs,
 }:
 
 let
   # Define the Python packages required
-  pythonPackages = pkgs.python313.withPackages (ps: with ps; [
-    numpy
-    libevdev
-    xlib
-    pyinotify
-    pyasyncore
-    pywayland
-    xkbcommon
-    systemd-python
-    xcffib
-    python-periphery
-  ]);
+  pythonPackages = pkgs.python313.withPackages (
+    ps: with ps; [
+      numpy
+      libevdev
+      xlib
+      pyinotify
+      pyasyncore
+      pywayland
+      xkbcommon
+      systemd-python
+      xcffib
+      python-periphery
+    ]
+  );
 in
 python313Packages.buildPythonPackage {
   pname = "asus-numberpad-driver";
@@ -35,7 +38,7 @@ python313Packages.buildPythonPackage {
     libxkbcommon
     libgcc
     gcc
-    pythonPackages  # Python dependencies already include python313
+    pythonPackages # Python dependencies already include python313
   ];
 
   doCheck = false;
@@ -64,7 +67,7 @@ python313Packages.buildPythonPackage {
     description = "Linux driver for NumberPad(2.0) on Asus laptops.";
     license = lib.licenses.gpl2;
     platforms = lib.platforms.linux;
-    maintainers = with lib.maintainers; [asus-linux-drivers];
+    maintainers = with lib.maintainers; [ asus-linux-drivers ];
     mainProgram = "numberpad.py";
   };
 }
