@@ -9,12 +9,7 @@ inputs:
 let
   cfg = config.hardware.asus-numberpad-driver;
 
-  # Function to convert configuration options to string
-  toConfigFile =
-    cfg:
-    builtins.concatStringsSep "\n" (
-      [ "[main]" ] ++ lib.attrsets.mapAttrsToList (key: value: "${key} = ${value}") cfg.config
-    );
+  ini = pkgs.formats.ini { };
 
   # Writable directory for the config file
   configDir = "/etc/asus-numberpad-driver/";
@@ -42,8 +37,14 @@ in
     };
 
     config = lib.mkOption {
-      type = lib.types.attrsOf lib.types.str;
+      type = ini.type;
       default = { };
+      example = {
+        main = {
+          "multitouch" = 1;
+          "activation_time" = "0.5";
+        };
+      };
       description = ''
         Configuration options for the numberpad driver.
         These options will be written to a configuration file for the driver.
@@ -89,7 +90,9 @@ in
     ];
 
     # Write the configuration file to the writable directory
-    environment.etc."asus-numberpad-driver/numberpad_dev".text = toConfigFile cfg;
+    environment.etc."asus-numberpad-driver/numberpad_dev".source = (
+      ini.generate "numberpad_dev" cfg.config
+    );
 
     # Enable i2c
     hardware.i2c.enable = true;
