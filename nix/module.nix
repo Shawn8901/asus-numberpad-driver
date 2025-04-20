@@ -32,7 +32,7 @@ in
 
     layout = lib.mkOption {
       type = lib.types.str;
-      default = "up5401ea";
+      example = "up5401ea";
       description = "The layout identifier for the numberpad driver (e.g. up5401ea). This value is required.";
     };
 
