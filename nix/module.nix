@@ -132,7 +132,7 @@ in
       startLimitIntervalSec = 300;
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${cfg.package}/share/asus-numberpad-driver/numberpad.py ${cfg.layout} ${configDir}";
+        ExecStart = "${lib.getExe cfg.package} ${cfg.layout} ${configDir}";
         StandardOutput = null;
         StandardError = null;
         Restart = "on-failure";
