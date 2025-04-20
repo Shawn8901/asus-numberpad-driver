@@ -23,7 +23,7 @@ in
 python311Packages.buildPythonPackage {
   pname = "asus-numberpad-driver";
   version = "6.5.0";
-  src = ../.;
+  src = lib.cleanSource ../.;
 
   format = "other";
 
