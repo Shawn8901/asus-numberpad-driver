@@ -8,7 +8,6 @@ inputs:
 
 let
   cfg = config.services.asus-numberpad-driver;
-  defaultPackage = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.default;
 
   # Function to convert configuration options to string
   toConfigFile =
@@ -23,6 +22,11 @@ in
 {
   options.services.asus-numberpad-driver = {
     enable = lib.mkEnableOption "Enable the Asus Numberpad Driver service.";
+
+    package = lib.mkOption {
+      type = lib.types.package;
+      default = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.default;
+    };
 
     layout = lib.mkOption {
       type = lib.types.str;
@@ -71,8 +75,6 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ defaultPackage ];
-
     # Ensure the writable directories exists
     systemd.tmpfiles.rules = [
       "d ${configDir} 0755 root root -"
@@ -120,18 +122,19 @@ in
       startLimitIntervalSec = 300;
       serviceConfig = {
         Type = "simple";
-        ExecStart = "${defaultPackage}/share/asus-numberpad-driver/numberpad.py ${cfg.layout} ${configDir}";
+        ExecStart = "${cfg.package}/share/asus-numberpad-driver/numberpad.py ${cfg.layout} ${configDir}";
         StandardOutput = null;
         StandardError = null;
         Restart = "on-failure";
         RestartSec = 1;
         TimeoutSec = 5;
-        WorkingDirectory = "${defaultPackage}";
+        WorkingDirectory = "${cfg.package}";
         Environment = [
           "XDG_SESSION_TYPE=${if cfg.wayland then "wayland" else "x11"}"
           "XDG_RUNTIME_DIR=${cfg.runtimeDir}"
           "DISPLAY=${cfg.display}"
-        ] ++ lib.optional (!cfg.ignoreWaylandDisplayEnv) "WAYLAND_DISPLAY=${cfg.waylandDisplay}";
+        ]
+        ++ lib.optional (!cfg.ignoreWaylandDisplayEnv) "WAYLAND_DISPLAY=${cfg.waylandDisplay}";
       };
     };
   };
