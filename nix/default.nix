@@ -32,7 +32,7 @@ python313Packages.buildPythonPackage {
     ibus
     libevdev
     curl
-    xorg.xinput
+    xinput
     i2c-tools
     libxml2
     libxkbcommon
